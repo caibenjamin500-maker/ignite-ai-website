@@ -1,0 +1,308 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --crimson: #CC0044;
+  --magenta: #B0228C;
+  --purple: #9B30FF;
+  --cyan: #00BFFF;
+  --teal: #00CED1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--crimson), var(--purple), var(--cyan));
+  border-radius: 3px;
+}
+
+/* ===================== LIQUID GLASS ===================== */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset;
+}
+
+.glass-nav {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  color: white;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(0, 191, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.08), 0 0 20px rgba(0, 191, 255, 0.1);
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===================== GRADIENT TEXT ===================== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--magenta) 40%, var(--purple) 70%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #FF6B6B 0%, var(--crimson) 40%, var(--magenta) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-cool {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===================== GRADIENT BORDERS ===================== */
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--crimson), var(--purple), var(--cyan));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ===================== BUTTONS ===================== */
+.btn-primary {
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--magenta) 50%, var(--purple) 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(204, 0, 68, 0.4), 0 0 60px rgba(155, 48, 255, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+  border-color: rgba(0, 191, 255, 0.5);
+  color: white;
+  background: rgba(0, 191, 255, 0.05);
+  box-shadow: 0 0 24px rgba(0, 191, 255, 0.15);
+}
+
+/* ===================== SCROLL REVEAL ===================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ===================== SECTION DIVIDER ===================== */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(204, 0, 68, 0.3), rgba(155, 48, 255, 0.4), rgba(0, 191, 255, 0.3), transparent);
+}
+
+/* ===================== GLOW EFFECTS ===================== */
+.glow-crimson {
+  box-shadow: 0 0 40px rgba(204, 0, 68, 0.3);
+}
+.glow-purple {
+  box-shadow: 0 0 40px rgba(155, 48, 255, 0.3);
+}
+.glow-cyan {
+  box-shadow: 0 0 40px rgba(0, 191, 255, 0.3);
+}
+
+/* ===================== FAQ ACCORDION ===================== */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              padding 0.3s ease;
+}
+
+.faq-answer.open {
+  max-height: 400px;
+}
+
+/* ===================== HERO PARTICLES ===================== */
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+  25% { transform: translateY(-20px) translateX(10px) scale(1.1); opacity: 1; }
+  75% { transform: translateY(10px) translateX(-8px) scale(0.9); opacity: 0.4; }
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particle-float linear infinite;
+}
+
+/* ===================== NUMBER COUNTER ===================== */
+.stat-number {
+  background: linear-gradient(135deg, #ffffff, var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===================== WORKFLOW TAG ===================== */
+.workflow-tag {
+  background: rgba(155, 48, 255, 0.12);
+  border: 1px solid rgba(155, 48, 255, 0.25);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.workflow-tag:hover {
+  background: rgba(155, 48, 255, 0.2);
+  border-color: rgba(155, 48, 255, 0.5);
+  color: white;
+}
+
+/* ===================== CUSTOM SELECTION ===================== */
+::selection {
+  background: rgba(155, 48, 255, 0.3);
+  color: white;
+}
