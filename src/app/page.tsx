@@ -1,440 +1,396 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import FogBackground from "@/components/FogBackground";
-import Navigation from "@/components/Navigation";
-import IgniteLogo from "@/components/IgniteLogo";
-import ScrollReveal from "@/components/ScrollReveal";
+import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 
-// ─────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Reveal-on-scroll
+// ─────────────────────────────────────────────────────────────
 
-const workflows = [
-  {
-    icon: "⚡",
-    title: "AI Lead Qualification & CRM Entry",
-    description:
-      "Automatically scores incoming leads based on custom criteria, enriches their data, and logs qualified prospects directly into your CRM — no manual data entry required.",
-    tags: ["Lead Gen", "CRM", "Sales"],
-  },
-  {
-    icon: "📋",
-    title: "Intelligent Document Processing",
-    description:
-      "Extracts key information from invoices, contracts, and intake forms and routes them through the appropriate approval workflows automatically.",
-    tags: ["Documents", "Approvals", "Finance"],
-  },
-  {
-    icon: "🤖",
-    title: "AI Customer Support Triage",
-    description:
-      "Classifies incoming support requests by priority and type, drafts contextual first responses, and routes tickets to the right team — 24/7 without delay.",
-    tags: ["Support", "Customer Service"],
-  },
-  {
-    icon: "📧",
-    title: "Multi-Stage Email Nurture Sequences",
-    description:
-      "Personalised, behaviour-triggered email flows that guide leads from first touch to booked call — adapting tone and timing based on how prospects engage.",
-    tags: ["Email", "Marketing", "Automation"],
-  },
-  {
-    icon: "📅",
-    title: "Client Onboarding Automation",
-    description:
-      "From signed agreement to ready-to-go client — automatically generates onboarding docs, sends welcome sequences, and creates internal task checklists.",
-    tags: ["Onboarding", "Operations"],
-  },
-  {
-    icon: "📊",
-    title: "Reporting & Market Intelligence",
-    description:
-      "Automatically aggregates data from multiple sources, generates executive summaries, and delivers scheduled intelligence reports to your inbox.",
-    tags: ["Reporting", "Analytics", "Insights"],
-  },
-];
-
-const problems = [
-  {
-    icon: "🕐",
-    problem: "Hours lost to manual data entry",
-    solution: "Automated capture and sync across every system you use",
-  },
-  {
-    icon: "📉",
-    problem: "Inconsistent lead follow-up",
-    solution: "AI-powered sequences that never miss a touchpoint",
-  },
-  {
-    icon: "🔄",
-    problem: "Bottlenecks in approval workflows",
-    solution: "Smart routing that keeps work moving without chasing anyone",
-  },
-  {
-    icon: "❌",
-    problem: "Human error in repetitive processes",
-    solution: "Rule-based AI that executes consistently, every time",
-  },
-  {
-    icon: "📈",
-    problem: "Can't scale without hiring more people",
-    solution: "AI agents that handle volume growth without headcount growth",
-  },
-  {
-    icon: "💬",
-    problem: "Slow or absent after-hours responses",
-    solution: "24/7 AI-powered engagement that never sleeps",
-  },
-];
-
-const faqs = [
-  {
-    q: "What is AI automation?",
-    a: "AI automation uses intelligent software to handle repetitive, time-consuming tasks automatically — freeing your team to focus on higher-value work that actually moves the needle.",
-  },
-  {
-    q: "How does Ignite AI build a solution for my business?",
-    a: "We start with a deep discovery session to understand your workflows, pain points, and goals. From there, we design and build a custom AI solution tailored specifically to your business — no templates, no one-size-fits-all.",
-  },
-  {
-    q: "Do I need technical knowledge to use your solutions?",
-    a: "Not at all. We build solutions that integrate seamlessly into your existing workflows and are designed to be intuitive — no technical background required to operate them.",
-  },
-  {
-    q: "How long does implementation take?",
-    a: "Timelines vary by complexity. Simpler automations can be live in as little as 1–2 weeks, while more sophisticated systems typically take 4–8 weeks from discovery to deployment.",
-  },
-  {
-    q: "Will it work with the tools my business already uses?",
-    a: "In most cases, yes. We build integrations with the tools you already rely on — CRMs, spreadsheets, communication platforms, scheduling systems, and more.",
-  },
-  {
-    q: "Is my business data secure?",
-    a: "Absolutely. Data privacy and security are built into every solution we create, following industry-standard practices from day one.",
-  },
-  {
-    q: "What support do I get after go-live?",
-    a: "We don't hand you a tool and disappear. We provide ongoing support, monitoring, and can iterate on your solution as your business grows and evolves.",
-  },
-  {
-    q: "How do I get started?",
-    a: "Simply fill out our contact form below and we'll reach out to schedule a free discovery call to learn about your business and explore exactly how AI can work for you.",
-  },
-];
-
-// ─────────────────────────────────────────────
-// COMPONENTS
-// ─────────────────────────────────────────────
-
-function HeroSection() {
-  const [mounted, setMounted] = useState(false);
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 100);
-    return () => clearTimeout(t);
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("is-visible");
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
-  const handleScroll = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
+  return (
+    <div
+      ref={ref}
+      className={`reveal ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Pointer-tracked glass card
+// ─────────────────────────────────────────────────────────────
+
+function GlassCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+  }, []);
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden"
-    >
-      {/* Radial vignette for hero depth */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, rgba(0,0,0,0.6) 100%)",
-        }}
-      />
+    <div ref={ref} onMouseMove={onMove} className={`glass glass-card ${className}`}>
+      {children}
+    </div>
+  );
+}
 
-      {/* Animated particles */}
-      {mounted && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="particle"
-              style={{
-                left: `${10 + i * 8}%`,
-                top: `${15 + ((i * 17) % 70)}%`,
-                width: `${3 + (i % 4)}px`,
-                height: `${3 + (i % 4)}px`,
-                backgroundColor:
-                  i % 3 === 0
-                    ? "rgba(204, 0, 68, 0.6)"
-                    : i % 3 === 1
-                    ? "rgba(155, 48, 255, 0.6)"
-                    : "rgba(0, 191, 255, 0.6)",
-                animationDuration: `${6 + (i % 5) * 2}s`,
-                animationDelay: `${i * 0.4}s`,
-              }}
-            />
-          ))}
-        </div>
-      )}
+// ─────────────────────────────────────────────────────────────
+// Icons (inline SVG — stroke style, no emoji)
+// ─────────────────────────────────────────────────────────────
 
-      <div
-        className={`relative z-10 flex flex-col items-center gap-8 max-w-5xl mx-auto transition-all duration-1000 ${
-          mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+const icon = {
+  phone: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
+    </svg>
+  ),
+  filter: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <path d="M3 4h18l-7 8.5V19l-4 2v-8.5L3 4Z" />
+    </svg>
+  ),
+  workflow: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <rect x="3" y="3" width="7" height="7" rx="2" />
+      <rect x="14" y="14" width="7" height="7" rx="2" />
+      <path d="M10 6.5h4a3 3 0 0 1 3 3V14M6.5 10v4a3 3 0 0 0 3 3H14" />
+    </svg>
+  ),
+  search: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
+  ),
+  build: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <path d="M14.7 6.3a4.5 4.5 0 0 0-6.07 5.32L3 17.25V21h3.75l5.63-5.63A4.5 4.5 0 0 0 17.7 9.3l-2.62 2.62-2.12-.88-.88-2.12L14.7 6.3Z" />
+    </svg>
+  ),
+  run: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+    </svg>
+  ),
+  shield: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+      <path d="M12 2 4 5.5v5.06c0 5.05 3.41 9.76 8 10.94 4.59-1.18 8-5.89 8-10.94V5.5L12 2Z" />
+      <path d="m9 12 2 2 4-4.5" />
+    </svg>
+  ),
+  arrow: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  ),
+  check: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+      <path d="m4 12.5 5 5L20 6.5" />
+    </svg>
+  ),
+};
+
+// ─────────────────────────────────────────────────────────────
+// Navigation
+// ─────────────────────────────────────────────────────────────
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
+      <nav
+        className={`glass flex w-full max-w-5xl items-center justify-between gap-6 !rounded-full px-5 py-3 transition-all duration-500 ${
+          scrolled ? "shadow-2xl" : "!border-transparent !bg-transparent !shadow-none !backdrop-blur-none [&::before]:opacity-0"
         }`}
       >
-        {/* Logo */}
-        <div className="animate-float">
-          <IgniteLogo size={80} showText={false} />
-        </div>
-
-        {/* Eyebrow */}
-        <div className="glass px-5 py-2 rounded-full border border-white/10">
-          <span className="text-xs font-semibold tracking-[0.25em] text-white/60 uppercase">
-            Custom AI Automation
+        <a href="#top" className="flex items-center gap-3">
+          <Image
+            src="/ignite-logo.jpg"
+            alt="Ignite AI"
+            width={36}
+            height={36}
+            className="rounded-full"
+            priority
+          />
+          <span className="text-[15px] font-semibold tracking-wide">
+            IGNITE&nbsp;AI
           </span>
+        </a>
+
+        <div className="hidden items-center gap-8 text-[14px] text-white/60 md:flex">
+          <a href="#systems" className="transition hover:text-white">Systems</a>
+          <a href="#process" className="transition hover:text-white">Process</a>
+          <a href="#about" className="transition hover:text-white">About</a>
         </div>
 
-        {/* Headline */}
-        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black leading-[1.0] tracking-tight">
-          <span className="block text-white">We Build the AI</span>
-          <span className="block gradient-text">That Works For You.</span>
-        </h1>
+        <a
+          href="#audit"
+          className="btn-primary !px-6 !py-2.5 !text-[13.5px]"
+        >
+          Free AI Audit
+        </a>
+      </nav>
+    </header>
+  );
+}
 
-        {/* Subheadline */}
-        <p className="text-xl md:text-2xl text-white/55 max-w-2xl leading-relaxed font-light">
-          Stop losing hours to repetitive tasks. Ignite AI designs and builds
-          custom automation solutions — uniquely crafted for your business,
-          your workflows, and your growth.
-        </p>
+// ─────────────────────────────────────────────────────────────
+// Hero
+// ─────────────────────────────────────────────────────────────
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-2">
-          <button
-            onClick={() => handleScroll("contact")}
-            className="btn-primary px-10 py-4 text-base font-semibold tracking-wide"
-          >
-            Ignite Your Business →
-          </button>
-          <button
-            onClick={() => handleScroll("what-we-do")}
-            className="btn-secondary px-10 py-4 text-base font-medium"
-          >
-            See How It Works
-          </button>
-        </div>
+function Hero() {
+  return (
+    <section id="top" className="relative overflow-hidden px-6 pb-28 pt-44 md:pt-52">
+      <div className="orb orb-1 -left-40 top-10" />
+      <div className="orb orb-2 -right-32 top-64" />
 
-        {/* Social proof bar */}
-        <div className="flex flex-wrap justify-center gap-6 mt-4 text-sm text-white/35">
-          <span>✦ 100% Custom Solutions</span>
-          <span>✦ No Hidden Pricing</span>
-          <span>✦ Built Around Your Business</span>
-          <span>✦ Ongoing Support</span>
-        </div>
-      </div>
+      <div className="mx-auto max-w-5xl text-center">
+        <Reveal>
+          <div className="glass mx-auto mb-8 inline-flex items-center gap-2.5 !rounded-full px-5 py-2 text-[13px] text-white/70">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ignite-cyan opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-ignite-cyan" />
+            </span>
+            Now taking on 3 new builds for July
+          </div>
+        </Reveal>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-        <span className="text-xs tracking-widest text-white/50 uppercase">Scroll</span>
-        <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent animate-pulse" />
+        <Reveal delay={120}>
+          <h1 className="text-balance text-5xl font-bold leading-[1.05] tracking-[-0.03em] md:text-7xl">
+            Every missed call is
+            <br />
+            revenue you{" "}
+            <span className="font-serif-accent text-gradient-flame font-normal">
+              already earned
+            </span>
+            .
+          </h1>
+        </Reveal>
+
+        <Reveal delay={240}>
+          <p className="mx-auto mt-7 max-w-2xl text-pretty text-lg leading-relaxed text-white/55 md:text-xl">
+            Ignite AI builds managed front-office systems for growing service
+            businesses — answering, qualifying, and booking your leads around
+            the clock, so nothing slips through while your team does the real
+            work.
+          </p>
+        </Reveal>
+
+        <Reveal delay={360}>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a href="#audit" className="btn-primary">
+              Get your free AI audit {icon.arrow}
+            </a>
+            <a href="#process" className="btn-glass">
+              See how it works
+            </a>
+          </div>
+        </Reveal>
+
+        <Reveal delay={480}>
+          <div className="mx-auto mt-20 grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
+            {[
+              ["24/7", "coverage — nights, weekends, holidays"],
+              ["60 sec", "from inquiry to first response"],
+              ["30-day", "results guarantee on every build"],
+            ].map(([stat, label]) => (
+              <div key={stat} className="glass px-6 py-5">
+                <div className="text-3xl font-bold tracking-tight">{stat}</div>
+                <div className="mt-1 text-[13px] leading-snug text-white/45">
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function WhatWeDoSection() {
-  const features = [
-    {
-      icon: "🔧",
-      title: "Built for Your Business",
-      description:
-        "Every automation we build is designed from the ground up around your specific workflows, tools, and goals — not retrofitted from a template.",
-    },
-    {
-      icon: "🧠",
-      title: "Powered by Cutting-Edge AI",
-      description:
-        "We leverage the latest in large language models, machine learning, and intelligent agents to create solutions that think, adapt, and act.",
-    },
-    {
-      icon: "🔗",
-      title: "Seamless Integration",
-      description:
-        "Our automations connect directly with the tools you already use — no ripping out your stack, just making it smarter.",
-    },
-    {
-      icon: "📐",
-      title: "No Price List — On Purpose",
-      description:
-        "Every business problem is unique. That's why every Ignite AI solution is uniquely scoped and priced — you get exactly what you need, and nothing you don't.",
-    },
-    {
-      icon: "🚀",
-      title: "From Discovery to Deployment",
-      description:
-        "We walk you through every step: discovery, design, build, testing, and deployment — with full transparency and collaboration throughout.",
-    },
-    {
-      icon: "🛡️",
-      title: "Built to Last",
-      description:
-        "We engineer robust, secure automations with monitoring and ongoing support — so your AI keeps running, even as your business evolves.",
-    },
-  ];
+// ─────────────────────────────────────────────────────────────
+// The problem
+// ─────────────────────────────────────────────────────────────
 
+function Problem() {
   return (
-    <section id="what-we-do" className="relative py-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <ScrollReveal className="text-center mb-20">
-          <div className="inline-block glass px-5 py-2 rounded-full border border-white/10 mb-6">
-            <span className="text-xs font-semibold tracking-[0.25em] text-white/50 uppercase">
-              What We Do
-            </span>
-          </div>
-          <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-            AI Automation That{" "}
-            <span className="gradient-text">Actually Fits</span>
-          </h2>
-          <p className="text-xl text-white/50 max-w-3xl mx-auto leading-relaxed">
-            Repetitive tasks are the hidden tax on your business. Every hour spent on
-            manual processes is an hour stolen from growth, creativity, and the work that
-            only you can do. We eliminate that tax with AI built precisely for you.
+    <section className="relative px-6 py-28">
+      <div className="mx-auto max-w-6xl">
+        <Reveal>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-white/35">
+            The leak
           </p>
-        </ScrollReveal>
+          <h2 className="mt-4 max-w-2xl text-4xl font-bold tracking-[-0.02em] md:text-5xl">
+            Your phone rings.
+            <br />
+            Your crew is on a roof.{" "}
+            <span className="font-serif-accent text-white/50 font-normal">
+              Then what?
+            </span>
+          </h2>
+        </Reveal>
 
-        {/* Feature Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f, i) => (
-            <ScrollReveal key={f.title} delay={i * 80}>
-              <div className="glass-card p-8 h-full flex flex-col gap-4">
-                <div
-                  className="text-3xl w-12 h-12 flex items-center justify-center rounded-2xl"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
-                >
-                  {f.icon}
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {[
+            {
+              ic: icon.phone,
+              stat: "27%",
+              head: "of inbound calls to service businesses go unanswered",
+              body: "And 80% of those callers won't leave a voicemail. They just dial your competitor.",
+            },
+            {
+              ic: icon.filter,
+              stat: "78%",
+              head: "of customers buy from whoever responds first",
+              body: "Speed isn't a nice-to-have. After five minutes, your odds of qualifying a lead drop 21×.",
+            },
+            {
+              ic: icon.workflow,
+              stat: "62%",
+              head: "of buying research happens outside business hours",
+              body: "Your website goes quiet at 5pm. Your future customers don't.",
+            },
+          ].map((c, i) => (
+            <Reveal key={c.stat} delay={i * 120}>
+              <GlassCard className="h-full p-8">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70">
+                  {c.ic}
                 </div>
-                <h3 className="text-lg font-bold text-white">{f.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed flex-1">{f.description}</p>
-              </div>
-            </ScrollReveal>
+                <div className="mt-6 text-4xl font-bold tracking-tight text-gradient-flame">
+                  {c.stat}
+                </div>
+                <h3 className="mt-3 text-[17px] font-semibold leading-snug">
+                  {c.head}
+                </h3>
+                <p className="mt-3 text-[14.5px] leading-relaxed text-white/45">
+                  {c.body}
+                </p>
+              </GlassCard>
+            </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* Highlight callout */}
-        <ScrollReveal delay={200}>
-          <div className="mt-16 gradient-border glass-card p-10 text-center max-w-4xl mx-auto">
-            <div
-              className="text-5xl mb-4"
-              style={{ filter: "drop-shadow(0 0 20px rgba(0,191,255,0.4))" }}
-            >
-              💡
-            </div>
-            <h3 className="text-3xl font-black mb-4">
-              No Price List — <span className="gradient-text-cool">By Design</span>
-            </h3>
-            <p className="text-white/55 text-lg max-w-2xl mx-auto leading-relaxed">
-              Every Ignite AI solution is custom-scoped to your business. We don't believe
-              in one-size-fits-all pricing because your problem isn't one-size-fits-all.
-              Book a discovery call and we'll design something built exactly for you.
+// ─────────────────────────────────────────────────────────────
+// Systems
+// ─────────────────────────────────────────────────────────────
+
+function Systems() {
+  return (
+    <section id="systems" className="relative px-6 py-28">
+      <div className="orb orb-3 -left-24 top-1/3" />
+      <div className="mx-auto max-w-6xl">
+        <Reveal>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-white/35">
+            What we build
+          </p>
+          <div className="mt-4 flex flex-wrap items-end justify-between gap-6">
+            <h2 className="max-w-xl text-4xl font-bold tracking-[-0.02em] md:text-5xl">
+              One front office.{" "}
+              <span className="font-serif-accent font-normal text-white/50">
+                Fully managed.
+              </span>
+            </h2>
+            <p className="max-w-sm text-[15px] leading-relaxed text-white/45">
+              Every system is custom-built for your business, installed in
+              days, and run by us month after month. You never touch the
+              machinery.
             </p>
           </div>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
-}
+        </Reveal>
 
-function WorkflowsSection() {
-  return (
-    <section id="workflows" className="relative py-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Workflows */}
-        <ScrollReveal className="text-center mb-20">
-          <div className="inline-block glass px-5 py-2 rounded-full border border-white/10 mb-6">
-            <span className="text-xs font-semibold tracking-[0.25em] text-white/50 uppercase">
-              Real Solutions
-            </span>
-          </div>
-          <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-            Workflows We've <span className="gradient-text">Already Built</span>
-          </h2>
-          <p className="text-xl text-white/50 max-w-3xl mx-auto">
-            Here's a sample of the kinds of automations we've designed and deployed
-            for real businesses — across industries, at every scale.
-          </p>
-        </ScrollReveal>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-32">
-          {workflows.map((w, i) => (
-            <ScrollReveal key={w.title} delay={i * 70}>
-              <div className="glass-card p-7 h-full flex flex-col gap-4">
-                <div className="flex items-start gap-4">
-                  <span
-                    className="text-2xl w-11 h-11 flex-shrink-0 flex items-center justify-center rounded-xl"
-                    style={{ background: "rgba(155,48,255,0.12)", border: "1px solid rgba(155,48,255,0.2)" }}
-                  >
-                    {w.icon}
-                  </span>
-                  <h3 className="text-base font-bold text-white leading-snug">{w.title}</h3>
+        <div className="mt-14 grid gap-5 lg:grid-cols-3">
+          {[
+            {
+              ic: icon.phone,
+              name: "AI Reception",
+              body: "Every call, text, and website chat answered instantly — in your company's voice. Missed calls get a text back in seconds, after-hours inquiries get real answers, and every conversation is captured.",
+              points: ["Missed-call text-back", "24/7 website chat", "After-hours coverage"],
+            },
+            {
+              ic: icon.filter,
+              name: "Lead Qualification",
+              body: "Not every inquiry deserves your time. Our systems ask the right questions, score every lead against your criteria, and put the serious ones at the top of your inbox with full context.",
+              points: ["Custom qualifying questions", "Lead scoring & routing", "Full conversation history"],
+            },
+            {
+              ic: icon.workflow,
+              name: "Booking & Follow-up",
+              body: "Qualified leads book straight onto your calendar. The ones who hesitate enter automatic follow-up that stays politely persistent for weeks — so deals stop dying of silence.",
+              points: ["Direct calendar booking", "Multi-touch follow-up", "CRM sync & reporting"],
+            },
+          ].map((s, i) => (
+            <Reveal key={s.name} delay={i * 120}>
+              <GlassCard className="flex h-full flex-col p-8">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70">
+                  {s.ic}
                 </div>
-                <p className="text-white/48 text-sm leading-relaxed flex-1">{w.description}</p>
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {w.tags.map((tag) => (
-                    <span key={tag} className="workflow-tag">
-                      {tag}
-                    </span>
+                <h3 className="mt-6 text-2xl font-semibold tracking-tight">
+                  {s.name}
+                </h3>
+                <p className="mt-3 flex-1 text-[14.5px] leading-relaxed text-white/45">
+                  {s.body}
+                </p>
+                <ul className="mt-6 space-y-2.5 border-t border-white/[0.07] pt-6">
+                  {s.points.map((p) => (
+                    <li key={p} className="flex items-center gap-3 text-[14px] text-white/60">
+                      <span className="text-ignite-cyan">{icon.check}</span>
+                      {p}
+                    </li>
                   ))}
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-
-        {/* Divider */}
-        <div className="section-divider mb-32" />
-
-        {/* Problems We Solve */}
-        <ScrollReveal className="text-center mb-20">
-          <div className="inline-block glass px-5 py-2 rounded-full border border-white/10 mb-6">
-            <span className="text-xs font-semibold tracking-[0.25em] text-white/50 uppercase">
-              Problems We Solve
-            </span>
-          </div>
-          <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-            Sound <span className="gradient-text-warm">Familiar?</span>
-          </h2>
-          <p className="text-xl text-white/50 max-w-3xl mx-auto">
-            These are the pain points we hear most often from businesses before they
-            work with us. If any of these hit home, we need to talk.
-          </p>
-        </ScrollReveal>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {problems.map((p, i) => (
-            <ScrollReveal key={p.problem} delay={i * 70}>
-              <div className="glass-card p-7 flex flex-col gap-4 group">
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl">{p.icon}</span>
-                  <div
-                    className="h-px flex-1"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, rgba(204,0,68,0.4), transparent)",
-                    }}
-                  />
-                </div>
-                <div>
-                  <p className="text-white/40 text-sm line-through mb-2 group-hover:text-white/30 transition-colors">
-                    {p.problem}
-                  </p>
-                  <p className="text-white font-semibold text-base leading-snug">
-                    ✓ {p.solution}
-                  </p>
-                </div>
-              </div>
-            </ScrollReveal>
+                </ul>
+              </GlassCard>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -442,92 +398,152 @@ function WorkflowsSection() {
   );
 }
 
-function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+// ─────────────────────────────────────────────────────────────
+// Process
+// ─────────────────────────────────────────────────────────────
 
+function Process() {
   return (
-    <section id="faq" className="relative py-32 px-6">
-      <div className="max-w-3xl mx-auto">
-        <ScrollReveal className="text-center mb-16">
-          <div className="inline-block glass px-5 py-2 rounded-full border border-white/10 mb-6">
-            <span className="text-xs font-semibold tracking-[0.25em] text-white/50 uppercase">
-              FAQ
-            </span>
-          </div>
-          <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-            Questions <span className="gradient-text">Answered</span>
-          </h2>
-          <p className="text-xl text-white/50">
-            Everything you need to know before getting started.
+    <section id="process" className="relative px-6 py-28">
+      <div className="mx-auto max-w-6xl">
+        <Reveal>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-white/35">
+            How it works
           </p>
-        </ScrollReveal>
+          <h2 className="mt-4 text-4xl font-bold tracking-[-0.02em] md:text-5xl">
+            Three steps.{" "}
+            <span className="font-serif-accent font-normal text-white/50">
+              No homework for you.
+            </span>
+          </h2>
+        </Reveal>
 
-        <div className="flex flex-col gap-3">
-          {faqs.map((faq, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <ScrollReveal key={i} delay={i * 50}>
-                <div
-                  className={`glass-card overflow-hidden transition-all duration-300 ${
-                    isOpen ? "border-white/15" : "border-white/08"
-                  }`}
-                >
-                  <button
-                    className="w-full text-left px-7 py-5 flex items-center justify-between gap-4"
-                    onClick={() => setOpenIndex(isOpen ? null : i)}
-                    aria-expanded={isOpen}
-                  >
-                    <span className="font-semibold text-white text-base leading-snug">
-                      {faq.q}
-                    </span>
-                    <span
-                      className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isOpen
-                          ? "bg-gradient-to-br from-crimson to-purple rotate-45"
-                          : "bg-white/08"
-                      }`}
-                      style={
-                        isOpen
-                          ? {
-                              background:
-                                "linear-gradient(135deg, #CC0044, #9B30FF)",
-                            }
-                          : {}
-                      }
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        className={`transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
-                      >
-                        <path
-                          d="M6 1v10M1 6h10"
-                          stroke="white"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-
-                  <div className={`faq-answer ${isOpen ? "open" : ""}`}>
-                    <p className="px-7 pb-6 text-white/55 leading-relaxed text-sm">
-                      {faq.a}
-                    </p>
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {[
+            {
+              ic: icon.search,
+              n: "01",
+              name: "The audit",
+              time: "20 minutes · free",
+              body: "We sit down with you and find the leak: how many calls, forms, and after-hours inquiries you're losing — and what they're worth in dollars per month. If the numbers don't justify a build, we'll tell you that, too.",
+            },
+            {
+              ic: icon.build,
+              n: "02",
+              name: "The build",
+              time: "Live within days",
+              body: "We design your system around how your business actually runs — your services, your service area, your way of talking to customers. You review it working live before anything goes public.",
+            },
+            {
+              ic: icon.run,
+              n: "03",
+              name: "The run",
+              time: "Managed monthly",
+              body: "We host it, watch it, and tune it — and you get a monthly report showing exactly what it captured. Backed by our guarantee: measurable results in 30 days, or your setup investment back.",
+            },
+          ].map((s, i) => (
+            <Reveal key={s.n} delay={i * 120}>
+              <GlassCard className="h-full p-8">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-white/70">
+                    {s.ic}
                   </div>
+                  <span className="font-serif-accent text-5xl text-white/[0.12]">
+                    {s.n}
+                  </span>
                 </div>
-              </ScrollReveal>
-            );
-          })}
+                <h3 className="mt-6 text-2xl font-semibold tracking-tight">{s.name}</h3>
+                <p className="mt-1 text-[13px] font-medium uppercase tracking-[0.12em] text-ignite-cyan/80">
+                  {s.time}
+                </p>
+                <p className="mt-4 text-[14.5px] leading-relaxed text-white/45">
+                  {s.body}
+                </p>
+              </GlassCard>
+            </Reveal>
+          ))}
         </div>
+
+        <Reveal delay={200}>
+          <div className="glass glass-deep mt-5 flex flex-col items-center gap-5 p-8 text-center md:flex-row md:text-left">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-ignite-cyan">
+              {icon.shield}
+            </div>
+            <p className="text-[15px] leading-relaxed text-white/60">
+              <span className="font-semibold text-white">The 30-day guarantee.</span>{" "}
+              If your system doesn&apos;t produce measurable results in its first
+              thirty days, we refund your setup investment. We can offer that
+              because we scope every build against your real numbers first.
+            </p>
+            <a href="#audit" className="btn-glass shrink-0 !px-6 !py-3 !text-[14px]">
+              Start with the audit
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function ContactSection() {
+// ─────────────────────────────────────────────────────────────
+// About
+// ─────────────────────────────────────────────────────────────
+
+function About() {
+  return (
+    <section id="about" className="relative px-6 py-28">
+      <div className="orb orb-2 -right-40 top-10" />
+      <div className="mx-auto max-w-4xl">
+        <Reveal>
+          <div className="glass glass-deep p-10 md:p-14">
+            <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-white/35">
+              Built in Greenville
+            </p>
+            <h2 className="mt-4 text-3xl font-bold tracking-[-0.02em] md:text-4xl">
+              Local enough to shake your hand.{" "}
+              <span className="font-serif-accent font-normal text-white/50">
+                Technical enough to build it all.
+              </span>
+            </h2>
+            <div className="mt-6 space-y-4 text-[15.5px] leading-relaxed text-white/55">
+              <p>
+                Ignite AI is run by Cai Benjamin out of Greenville, South
+                Carolina. No offshore team, no ticket queue — when you call,
+                you get the person who built your system.
+              </p>
+              <p>
+                We work with a small number of Upstate service businesses at a
+                time, on purpose. Every build gets designed, installed, and
+                managed personally — which is why we cap new projects at three
+                per month.
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {["Greenville, SC", "Serving the Upstate & beyond", "Founder-built & managed"].map(
+                (t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-[13px] text-white/50"
+                  >
+                    {t}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Lead capture
+// ─────────────────────────────────────────────────────────────
+
+type FormState = "idle" | "submitting" | "success" | "error";
+
+function AuditForm() {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -535,287 +551,238 @@ function ContactSection() {
     businessName: "",
     notes: "",
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [state, setState] = useState<FormState>("idle");
+  const [error, setError] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const set = (k: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setStatus("loading");
-    setErrorMsg("");
-
+    setState("submitting");
+    setError("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Something went wrong. Please try again.");
-      }
-
-      setStatus("success");
-      setForm({ name: "", email: "", phone: "", businessName: "", notes: "" });
-    } catch (err: unknown) {
-      setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Something went wrong.");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Something went wrong.");
+      setState("success");
+    } catch (err) {
+      setState("error");
+      setError(
+        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      );
     }
-  };
-
-  if (status === "success") {
-    return (
-      <section id="contact" className="relative py-32 px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="glass-card p-16 flex flex-col items-center gap-6">
-            <div
-              className="text-6xl animate-float"
-              style={{ filter: "drop-shadow(0 0 20px rgba(0,191,255,0.5))" }}
-            >
-              🔥
-            </div>
-            <h2 className="text-4xl font-black gradient-text">You're Ignited!</h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              Thanks for reaching out. We've received your details and will be
-              in touch within one business day to schedule your free discovery call.
-            </p>
-            <button
-              onClick={() => setStatus("idle")}
-              className="btn-secondary px-8 py-3 text-sm font-medium mt-2"
-            >
-              Submit Another Enquiry
-            </button>
-          </div>
-        </div>
-      </section>
-    );
   }
 
   return (
-    <section id="contact" className="relative py-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Left — Copy */}
-          <div className="lg:sticky lg:top-28">
-            <ScrollReveal direction="left">
-              <div className="inline-block glass px-5 py-2 rounded-full border border-white/10 mb-6">
-                <span className="text-xs font-semibold tracking-[0.25em] text-white/50 uppercase">
-                  Get Started
-                </span>
-              </div>
-              <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-                Let's Build{" "}
-                <span className="gradient-text">Something Great</span>
-              </h2>
-              <p className="text-xl text-white/50 leading-relaxed mb-8">
-                Tell us about your business. We'll reach out to schedule a free
-                discovery call where we learn about your workflows, challenges, and
-                goals — and explore exactly how AI can work for you.
+    <section id="audit" className="relative px-6 py-28">
+      <div className="orb orb-1 -left-32 bottom-0" />
+      <div className="mx-auto max-w-6xl">
+        <div className="glass glass-deep overflow-hidden md:grid md:grid-cols-5">
+          {/* Left — pitch */}
+          <div className="border-b border-white/[0.07] p-10 md:col-span-2 md:border-b-0 md:border-r md:p-12">
+            <Reveal>
+              <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-white/35">
+                Free AI audit
               </p>
-
-              <div className="flex flex-col gap-4">
+              <h2 className="mt-4 text-3xl font-bold tracking-[-0.02em] md:text-4xl">
+                Find out what missed calls{" "}
+                <span className="font-serif-accent font-normal text-gradient-flame">
+                  actually cost you
+                </span>
+                .
+              </h2>
+              <p className="mt-5 text-[15px] leading-relaxed text-white/50">
+                Twenty minutes. We&apos;ll map where leads are slipping through
+                your front office and put a dollar figure on it. No pitch
+                unless the numbers justify one.
+              </p>
+              <ul className="mt-8 space-y-3.5">
                 {[
-                  { icon: "🎯", text: "Free discovery call — no commitment" },
-                  { icon: "🔒", text: "Your information stays private" },
-                  { icon: "⚡", text: "We respond within one business day" },
-                  { icon: "🛠️", text: "Custom solution, not a template" },
-                ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-3 text-white/60 text-sm">
-                    <span>{item.icon}</span>
-                    <span>{item.text}</span>
-                  </div>
+                  "Your estimated monthly revenue leak, quantified",
+                  "The top three gaps in your lead handling",
+                  "A clear fix — even if you build it without us",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-3 text-[14.5px] text-white/60">
+                    <span className="mt-0.5 text-ignite-cyan">{icon.check}</span>
+                    {t}
+                  </li>
                 ))}
-              </div>
-            </ScrollReveal>
+              </ul>
+            </Reveal>
           </div>
 
-          {/* Right — Form */}
-          <ScrollReveal direction="right">
-            <div className="glass-card gradient-border p-10">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-semibold tracking-wider text-white/40 uppercase">
-                      Full Name *
+          {/* Right — form */}
+          <div className="p-10 md:col-span-3 md:p-12">
+            {state === "success" ? (
+              <div className="flex h-full flex-col items-center justify-center py-12 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-ignite-cyan/30 bg-ignite-cyan/10 text-ignite-cyan">
+                  {icon.check}
+                </div>
+                <h3 className="mt-6 text-2xl font-semibold">You&apos;re on the list.</h3>
+                <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-white/50">
+                  Check your inbox — we&apos;ve sent a booking link so you can
+                  lock in your audit time now. Otherwise, we&apos;ll reach out
+                  within one business day.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={submit} className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="f-name" className="mb-2 block text-[13px] font-medium text-white/50">
+                      Your name *
                     </label>
                     <input
-                      type="text"
-                      name="name"
+                      id="f-name"
+                      className="field"
+                      placeholder="Jordan Smith"
                       value={form.name}
-                      onChange={handleChange}
+                      onChange={set("name")}
                       required
-                      placeholder="Jane Smith"
-                      className="glass-input px-4 py-3 w-full text-sm"
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-semibold tracking-wider text-white/40 uppercase">
-                      Business Name *
+                  <div>
+                    <label htmlFor="f-biz" className="mb-2 block text-[13px] font-medium text-white/50">
+                      Business name *
                     </label>
                     <input
-                      type="text"
-                      name="businessName"
+                      id="f-biz"
+                      className="field"
+                      placeholder="Smith Heating & Air"
                       value={form.businessName}
-                      onChange={handleChange}
+                      onChange={set("businessName")}
                       required
-                      placeholder="Acme Corp"
-                      className="glass-input px-4 py-3 w-full text-sm"
                     />
                   </div>
                 </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold tracking-wider text-white/40 uppercase">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="jane@example.com"
-                    className="glass-input px-4 py-3 w-full text-sm"
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="f-email" className="mb-2 block text-[13px] font-medium text-white/50">
+                      Work email *
+                    </label>
+                    <input
+                      id="f-email"
+                      type="email"
+                      className="field"
+                      placeholder="jordan@smithhvac.com"
+                      value={form.email}
+                      onChange={set("email")}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="f-phone" className="mb-2 block text-[13px] font-medium text-white/50">
+                      Phone
+                    </label>
+                    <input
+                      id="f-phone"
+                      type="tel"
+                      className="field"
+                      placeholder="(864) 555-0123"
+                      value={form.phone}
+                      onChange={set("phone")}
+                    />
+                  </div>
                 </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold tracking-wider text-white/40 uppercase">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="+1 (555) 000-0000"
-                    className="glass-input px-4 py-3 w-full text-sm"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold tracking-wider text-white/40 uppercase">
-                    Tell Us About Your Business & Challenges
+                <div>
+                  <label htmlFor="f-notes" className="mb-2 block text-[13px] font-medium text-white/50">
+                    What&apos;s slipping through right now?
                   </label>
                   <textarea
-                    name="notes"
+                    id="f-notes"
+                    className="field min-h-[110px] resize-y"
+                    placeholder="e.g. We miss calls when the crews are out, and web leads sit until the evening…"
                     value={form.notes}
-                    onChange={handleChange}
-                    rows={5}
-                    placeholder="What repetitive tasks are eating your team's time? What processes feel broken? We're all ears..."
-                    className="glass-input px-4 py-3 w-full text-sm resize-none"
+                    onChange={set("notes")}
                   />
                 </div>
 
-                {status === "error" && (
-                  <div className="glass px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-sm">
-                    {errorMsg}
-                  </div>
+                {state === "error" && (
+                  <p className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-[14px] text-red-300">
+                    {error}
+                  </p>
                 )}
 
                 <button
                   type="submit"
-                  disabled={status === "loading"}
-                  className="btn-primary py-4 text-base font-semibold tracking-wide mt-2 w-full disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={state === "submitting"}
+                  className="btn-primary w-full !py-4"
                 >
-                  {status === "loading" ? (
-                    <span className="flex items-center justify-center gap-3">
-                      <svg
-                        className="animate-spin w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                      Sending...
-                    </span>
-                  ) : (
-                    "Ignite My Business →"
-                  )}
+                  {state === "submitting" ? "Sending…" : <>Request my free audit {icon.arrow}</>}
                 </button>
-
-                <p className="text-center text-white/25 text-xs">
-                  By submitting you agree to be contacted by Ignite AI. No spam, ever.
+                <p className="text-center text-[12.5px] text-white/30">
+                  No spam, no obligation. Your details go straight to Cai — and
+                  nowhere else.
                 </p>
               </form>
-            </div>
-          </ScrollReveal>
+            )}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// Footer
+// ─────────────────────────────────────────────────────────────
+
 function Footer() {
   return (
-    <footer className="relative border-t border-white/05 py-12 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <IgniteLogo size={28} />
-        <p className="text-white/25 text-sm text-center">
-          © {new Date().getFullYear()} Ignite AI. All rights reserved. Custom AI solutions for forward-thinking businesses.
-        </p>
-        <div className="flex gap-6 text-sm text-white/30">
-          <button
-            onClick={() => document.getElementById("what-we-do")?.scrollIntoView({ behavior: "smooth" })}
-            className="hover:text-white/60 transition-colors"
-          >
-            What We Do
-          </button>
-          <button
-            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-            className="hover:text-white/60 transition-colors"
-          >
-            Contact
-          </button>
+    <footer className="border-t border-white/[0.06] px-6 py-12">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 md:flex-row">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/ignite-logo.jpg"
+            alt="Ignite AI"
+            width={32}
+            height={32}
+            className="rounded-full"
+          />
+          <div>
+            <div className="text-[14px] font-semibold tracking-wide">IGNITE AI</div>
+            <div className="text-[12px] text-white/35">Greenville, South Carolina</div>
+          </div>
         </div>
+        <div className="flex items-center gap-8 text-[13.5px] text-white/45">
+          <a href="#systems" className="transition hover:text-white">Systems</a>
+          <a href="#process" className="transition hover:text-white">Process</a>
+          <a href="#audit" className="transition hover:text-white">Free audit</a>
+          <a href="mailto:caibenjamin500@gmail.com" className="transition hover:text-white">
+            Email us
+          </a>
+        </div>
+        <p className="text-[12.5px] text-white/25">
+          © {new Date().getFullYear()} Ignite AI. All rights reserved.
+        </p>
       </div>
     </footer>
   );
 }
 
-// ─────────────────────────────────────────────
-// MAIN PAGE
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// Page
+// ─────────────────────────────────────────────────────────────
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen">
-      <FogBackground />
-      <Navigation />
-
-      <div className="relative z-10">
-        <HeroSection />
-
-        <div className="section-divider" />
-        <WhatWeDoSection />
-
-        <div className="section-divider" />
-        <WorkflowsSection />
-
-        <div className="section-divider" />
-        <FAQSection />
-
-        <div className="section-divider" />
-        <ContactSection />
-
-        <Footer />
-      </div>
+    <main className="relative">
+      <div className="ambient" />
+      <div className="grain" />
+      <Nav />
+      <Hero />
+      <Problem />
+      <Systems />
+      <Process />
+      <About />
+      <AuditForm />
+      <Footer />
     </main>
   );
 }
