@@ -1,46 +1,70 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import { site } from "@/lib/site";
+
+/**
+ * Inter, served from this origin.
+ *
+ * The font file lives in the repo rather than being fetched from Google Fonts,
+ * so page load makes no third-party request, the build does not depend on an
+ * external service, and no visitor IP is handed to anyone by loading the page.
+ * One variable file covers every weight the site uses.
+ */
+const inter = localFont({
+  src: "./fonts/inter-latin-variable.woff2",
+  weight: "100 900",
+  style: "normal",
+  display: "swap",
+  variable: "--font-inter",
+  fallback: ["system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+});
+
 export const metadata: Metadata = {
-  title: "Ignite AI — Managed AI Front Office for Service Businesses",
+  metadataBase: new URL(site.url),
+  title: {
+    default: "Ignite AI — managed AI front office for service businesses",
+    template: "%s — Ignite AI",
+  },
   description:
-    "Ignite AI builds and manages AI reception, lead qualification, and booking systems for growing service businesses — so every call, chat, and after-hours inquiry gets answered. Based in Greenville, SC.",
-  keywords:
-    "AI receptionist, missed call text back, lead qualification, appointment booking automation, AI front office, Greenville SC",
+    "Ignite AI builds and runs AI reception, lead qualification, and booking for service businesses in Greenville, South Carolina, so every call, chat, and after-hours inquiry gets answered.",
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Ignite AI — Managed AI Front Office for Service Businesses",
+    title: "Ignite AI — managed AI front office for service businesses",
     description:
-      "Every missed call is revenue you already earned. Ignite AI answers, qualifies, and books your leads 24/7 — built and managed in Greenville, SC.",
+      "Answering, qualifying, and booking your inbound leads around the clock. Built and managed in Greenville, South Carolina.",
+    url: site.url,
+    siteName: site.name,
+    locale: "en_US",
     type: "website",
-    siteName: "Ignite AI",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Ignite AI — Managed AI Front Office",
+    card: "summary",
+    title: "Ignite AI — managed AI front office",
     description:
-      "AI reception, lead qualification, and booking — built and managed for growing service businesses.",
+      "AI reception, lead qualification, and booking, built and managed for growing service businesses.",
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased">{children}</body>
+    <html lang="en" className={inter.variable}>
+      <body>
+        <a href="#main" className="skip-link">
+          Skip to main content
+        </a>
+        <SiteHeader />
+        <main id="main" tabIndex={-1}>
+          {children}
+        </main>
+        <SiteFooter />
+      </body>
     </html>
   );
 }
