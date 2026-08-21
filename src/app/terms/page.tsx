@@ -19,8 +19,8 @@ export default function Terms() {
       <p>
         By using igniteaiagents.com you agree to what is set out here. If you do
         not agree, please do not use the site. These terms are between you and{" "}
-        {site.legalName} (&ldquo;{site.name}&rdquo;, &ldquo;we&rdquo;,
-        &ldquo;us&rdquo;).
+        {site.name}, {site.legalStructure} (&ldquo;{site.name}&rdquo;,
+        &ldquo;we&rdquo;, &ldquo;us&rdquo;).
       </p>
 
       <h2>What this website is</h2>
