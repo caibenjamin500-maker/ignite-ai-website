@@ -5,10 +5,12 @@
 export const site = {
   name: "Ignite AI",
   /**
-   * The legal name the business trades under. Ignite AI is operated as a sole
-   * proprietorship by Cai Benjamin — update this if the business incorporates.
+   * How the business is legally constituted, written as a phrase that can be
+   * dropped straight into a sentence after the trading name. Update this if
+   * the business incorporates (e.g. "a South Carolina limited liability
+   * company").
    */
-  legalName: "Ignite AI, a sole proprietorship of Cai Benjamin",
+  legalStructure: "a sole proprietorship of Cai Benjamin",
   owner: "Cai Benjamin",
   url: "https://igniteaiagents.com",
   email: "caibenjamin500@gmail.com",
