@@ -17,8 +17,8 @@ export default function Privacy() {
     >
       <h2>Who we are</h2>
       <p>
-        {site.name} is {site.legalName}, based in {site.location}. We are the
-        party responsible for the information described on this page. You can
+        {site.name} is {site.legalStructure}, based in {site.location}. We are
+        the party responsible for the information described on this page. You can
         reach us at{" "}
         <a href={`mailto:${site.email}`} className="link">
           {site.email}
