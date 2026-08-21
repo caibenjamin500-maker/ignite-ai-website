@@ -85,7 +85,7 @@ export default function SiteFooter() {
         </div>
 
         <p className="mt-12 border-t border-[var(--line)] pt-6 text-[13px] text-[var(--fg-3)]">
-          © {new Date().getFullYear()} {site.name}. {site.legalName}.
+          © {new Date().getFullYear()} {site.name} — {site.legalStructure}.
         </p>
       </div>
     </footer>
