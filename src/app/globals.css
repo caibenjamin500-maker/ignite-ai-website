@@ -1,16 +1,44 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   Design tokens
+   Every colour is checked against WCAG 2.1 contrast minimums:
+   - body / secondary / muted text all clear 4.5:1 on their
+     backgrounds
+   - white on --accent is 5.75:1
+   - --line-strong, used on form borders, is 3.5:1, above the
+     3:1 required for a boundary that carries meaning alone
+   ============================================================ */
+
 :root {
-  --bg: #07080c;
-  --crimson: #cc0044;
-  --magenta: #b0228c;
-  --purple: #9b30ff;
-  --cyan: #00bfff;
-  --teal: #00ced1;
+  --bg: #0d0e10;
+  --surface: #15171a;
+
+  --line: #24272c; /* decorative hairlines and dividers */
+  --line-strong: #646a74; /* borders that define an interactive control */
+
+  --fg: #f4f5f7;
+  --fg-2: #b4b9c1;
+  --fg-3: #8b9099;
+
+  --accent: #cc0044; /* button fill only — white text on it is 5.75:1 */
+  --accent-hover: #b3003a;
+
+  --focus: #ffb4c6;
+  --error: #ff8a9e;
+
+  /* One spacing rhythm, used by every section */
+  --section-y: 4.5rem;
+  --radius: 4px;
+  --radius-lg: 6px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --section-y: 6.5rem;
+  }
 }
 
 * {
@@ -19,330 +47,304 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 110px;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: var(--bg);
-  color: #fff;
-  font-family: "Inter", system-ui, sans-serif;
-  overflow-x: hidden;
+  color: var(--fg);
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: rgba(0, 191, 255, 0.25);
+  background: rgba(255, 61, 110, 0.28);
   color: #fff;
 }
 
-/* ── Scrollbar ─────────────────────────────── */
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #07080c;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 99px;
-  border: 2px solid #07080c;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.16);
+/* One visible focus ring, on everything focusable. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-/* ── Liquid glass surfaces ─────────────────── */
-.glass {
-  position: relative;
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.03) 40%,
-    rgba(255, 255, 255, 0.015) 100%
-  );
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
-  backdrop-filter: blur(24px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 24px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.03),
-    0 24px 48px -12px rgba(0, 0, 0, 0.5);
-}
+/* ============================================================
+   Component classes
+   These live in Tailwind's `components` layer on purpose: it
+   sits below `utilities`, so a utility in the markup (`hidden`,
+   `w-full`, a spacing override) always wins over the class here
+   without needing `!important`.
+   ============================================================ */
 
-/* specular highlight on the top edge */
-.glass::before {
-  content: "";
-  position: absolute;
-  inset: 0 12% auto 12%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.5),
-    transparent
-  );
-  border-radius: 99px;
-  pointer-events: none;
-}
-
-.glass-deep {
-  background: linear-gradient(
-    165deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.02) 50%,
-    rgba(7, 8, 12, 0.4) 100%
-  );
-  -webkit-backdrop-filter: blur(32px) saturate(160%);
-  backdrop-filter: blur(32px) saturate(160%);
-}
-
-/* interactive card — pointer-tracked sheen */
-.glass-card {
-  transition:
-    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 0.45s ease,
-    box-shadow 0.45s ease;
-}
-.glass-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 0%),
-    rgba(255, 255, 255, 0.08),
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-.glass-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 32px 64px -16px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(0, 191, 255, 0.06);
-}
-.glass-card:hover::after {
-  opacity: 1;
-}
-
-/* ── Buttons ───────────────────────────────── */
-.btn-primary {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 16px 32px;
-  border-radius: 99px;
-  font-weight: 600;
-  font-size: 15px;
-  letter-spacing: 0.01em;
-  color: #fff;
-  cursor: pointer;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 45%),
-    linear-gradient(135deg, var(--crimson), var(--magenta) 55%, var(--purple));
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 12px 32px -8px rgba(204, 0, 68, 0.45);
-  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    0 20px 44px -8px rgba(204, 0, 68, 0.55);
-}
-.btn-primary:active {
-  transform: translateY(0);
-}
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-glass {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 16px 32px;
-  border-radius: 99px;
-  font-weight: 500;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.9);
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all 0.35s ease;
-}
-.btn-glass:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* ── Typography helpers ────────────────────── */
-.font-serif-accent {
-  font-family: "Instrument Serif", Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-}
-
-.text-gradient-flame {
-  background: linear-gradient(
-    100deg,
-    #ff5c8a 0%,
-    var(--magenta) 35%,
-    var(--purple) 60%,
-    var(--cyan) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* ── Form fields ───────────────────────────── */
-.field {
-  width: 100%;
-  padding: 15px 18px;
-  border-radius: 14px;
-  font-size: 15px;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition:
-    border-color 0.3s ease,
-    background 0.3s ease,
-    box-shadow 0.3s ease;
-}
-.field::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-.field:focus {
-  outline: none;
-  border-color: rgba(0, 191, 255, 0.45);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 4px rgba(0, 191, 255, 0.1);
-}
-
-/* ── Ambient background ────────────────────── */
-.ambient {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background:
-    radial-gradient(
-      1100px 700px at 85% -10%,
-      rgba(0, 191, 255, 0.1),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 650px at -10% 25%,
-      rgba(204, 0, 68, 0.12),
-      transparent 60%
-    ),
-    radial-gradient(
-      1000px 800px at 50% 115%,
-      rgba(155, 48, 255, 0.1),
-      transparent 65%
-    ),
-    var(--bg);
-}
-
-/* film grain — kills the flat "AI render" look */
-.grain {
-  position: fixed;
-  inset: -50%;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain-shift 9s steps(6) infinite;
-}
-@keyframes grain-shift {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-3%, 2%); }
-  40% { transform: translate(2%, -3%); }
-  60% { transform: translate(-2%, -2%); }
-  80% { transform: translate(3%, 3%); }
-}
-
-/* slow drifting orbs behind the glass */
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  pointer-events: none;
-  will-change: transform;
-}
-.orb-1 {
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, rgba(204, 0, 68, 0.35), transparent 70%);
-  animation: drift-1 26s ease-in-out infinite;
-}
-.orb-2 {
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(circle, rgba(0, 191, 255, 0.28), transparent 70%);
-  animation: drift-2 32s ease-in-out infinite;
-}
-.orb-3 {
-  width: 380px;
-  height: 380px;
-  background: radial-gradient(circle, rgba(155, 48, 255, 0.3), transparent 70%);
-  animation: drift-3 38s ease-in-out infinite;
-}
-@keyframes drift-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, -40px) scale(1.12); }
-}
-@keyframes drift-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-70px, 50px) scale(0.92); }
-}
-@keyframes drift-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(40px, 60px) scale(1.08); }
-}
-
-/* ── Reveal-on-scroll ──────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
+@layer components {
+  /* ── Skip link ───────────────────────────── */
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -100%;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--fg);
+    color: var(--bg);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: top 0.15s ease;
   }
-  .orb-1,
-  .orb-2,
-  .orb-3,
-  .grain {
-    animation: none;
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  /* ── Type scale ──────────────────────────── */
+  /* Four sizes, two weights, nothing above 48px. */
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  .h1 {
+    font-size: 2.125rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .h2 {
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  .h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .lede {
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--fg-2);
+  }
+
+  .prose-measure {
+    max-width: 60ch;
+  }
+
+  /* ── Buttons ─────────────────────────────── */
+  /* Identical geometry across variants, so weight is the only
+     thing that separates primary from secondary. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.6875rem 1.375rem;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+  }
+  .btn-primary:disabled {
+    background: #4a2030;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--line-strong);
+  }
+  .btn-secondary:hover {
+    background: var(--surface);
+    border-color: var(--fg-3);
+  }
+
+  /* ── Links ───────────────────────────────── */
+  /* Underlined, so a link is never signalled by colour alone. */
+  .link {
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--fg-3);
+    transition: text-decoration-color 0.15s ease;
+  }
+  .link:hover {
+    text-decoration-color: var(--fg);
+  }
+
+  /* A link that stands on its own — footer lists, a secondary CTA —
+     needs a target at least 24px tall (WCAG 2.2). Links inside a
+     sentence are exempt and must stay inline so they can wrap, so
+     this is opt-in rather than applied to every `.link`. */
+  .link-block {
+    display: inline-block;
+    padding-block: 0.3125rem;
+  }
+
+  /* ── Form fields ─────────────────────────── */
+  /* Same height, radius, and border on every control. */
+  .field {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.5;
+    color: var(--fg);
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    transition: border-color 0.15s ease;
+  }
+  .field::placeholder {
+    color: var(--fg-3);
+  }
+  .field:hover {
+    border-color: var(--fg-3);
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+    border-color: var(--focus);
+  }
+  /* An invalid field is marked by its border, an icon, and text —
+     never by colour on its own. */
+  .field[aria-invalid="true"] {
+    border-color: var(--error);
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--fg-2);
+  }
+
+  .field-hint {
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--fg-3);
+  }
+
+  .field-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.375rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--error);
+  }
+
+  /* ── Surfaces ────────────────────────────── */
+  /* One card style, used only where the content is genuinely a
+     set of parallel items. */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+
+  /* ── Legal pages ─────────────────────────── */
+  .legal > * + * {
+    margin-top: 1rem;
+  }
+  .legal h2 {
+    margin-top: 2.75rem;
+    padding-top: 1.375rem;
+    border-top: 1px solid var(--line);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .legal h3 {
+    margin-top: 1.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .legal p,
+  .legal li,
+  .legal dd {
+    color: var(--fg-2);
+    line-height: 1.7;
+  }
+  .legal ul,
+  .legal ol {
+    padding-left: 1.25rem;
+  }
+  .legal ul {
+    list-style: disc;
+  }
+  .legal ol {
+    list-style: decimal;
+  }
+  .legal li + li {
+    margin-top: 0.5rem;
+  }
+  .legal li::marker {
+    color: var(--fg-3);
+  }
+  .legal strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .legal dt {
+    margin-top: 1.25rem;
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .legal dd {
+    margin-top: 0.25rem;
+  }
+}
+
+/* ============================================================
+   Motion
+   The only movement on this site is the mobile menu opening and
+   colour transitions on hover. Nothing animates on load and
+   nothing moves on scroll, so there is no entrance animation to
+   disable — only the transitions that already exist.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
