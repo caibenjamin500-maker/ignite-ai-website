@@ -25,6 +25,7 @@
 
   --accent: #cc0044; /* button fill only — white text on it is 5.75:1 */
   --accent-hover: #b3003a;
+  --accent-text: #ff3d6e; /* the same brand red, lightened to 5.65:1 as text */
 
   --focus: #ffb4c6;
   --error: #ff8a9e;
@@ -272,6 +273,28 @@ body {
     border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
+  }
+
+  /* ── Demo number ─────────────────────────── */
+  /* The single control on /demo. Sized so it is unmistakably the thing to
+     press, and kept as a real link so it dials on a phone and is selectable
+     on a desktop. */
+  .demo-number {
+    display: inline-block;
+    font-size: clamp(2rem, 8.5vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+    transition: color 0.15s ease;
+  }
+  .demo-number:hover {
+    color: var(--accent-text);
   }
 
   /* ── Legal pages ─────────────────────────── */

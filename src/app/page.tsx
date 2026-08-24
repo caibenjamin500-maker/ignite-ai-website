@@ -1,11 +1,64 @@
 import AuditForm from "@/components/AuditForm";
-import { MONTHLY_BUILD_SLOTS, currentMonth, site } from "@/lib/site";
+import { FOUNDING_SLOTS, MONTHLY_BUILD_SLOTS, currentMonth, site } from "@/lib/site";
 
 /**
  * Regenerate hourly. This is what makes the availability line in the hero roll
  * over to the new month on its own, without anyone editing a file.
  */
 export const revalidate = 3600;
+
+/**
+ * Structured data describing the business to search engines.
+ *
+ * Every field restates something that is true and visible on the page or on
+ * the Google Business Profile — no ratings, no review counts, no staff
+ * numbers. Markup that claims more than the page shows is what gets sites
+ * penalised, and an invented star rating is exactly the kind of thing Google
+ * acts on. The service-area list matches the Business Profile exactly.
+ */
+const SERVICE_AREA = [
+  "Greenville",
+  "Greer",
+  "Simpsonville",
+  "Mauldin",
+  "Taylors",
+  "Travelers Rest",
+  "Fountain Inn",
+  "Easley",
+  "Spartanburg",
+];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: site.name,
+  description:
+    "Managed AI reception, lead qualification, and booking systems for service businesses.",
+  url: site.url,
+  email: site.email,
+  telephone: site.phone,
+  logo: `${site.url}/icon.png`,
+  image: `${site.url}/icon.png`,
+  founder: { "@type": "Person", name: site.owner },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Greenville",
+    addressRegion: "SC",
+    addressCountry: "US",
+  },
+  areaServed: SERVICE_AREA.map((name) => ({
+    "@type": "City",
+    name,
+    addressRegion: "SC",
+  })),
+  knowsAbout: [
+    "AI receptionist",
+    "missed call text back",
+    "lead qualification",
+    "appointment booking automation",
+    "after-hours call answering",
+  ],
+};
 
 const SYSTEMS = [
   {
@@ -78,11 +131,18 @@ export default function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        // Built above from our own constants, never from user input, so there
+        // is nothing here that could carry injected markup.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
       {/* ── Hero ──────────────────────────────── */}
       <section className="border-b border-[var(--line)] px-5 py-[var(--section-y)] md:px-8">
         <div className="mx-auto max-w-6xl">
           <p className="eyebrow">
-            Now taking on {MONTHLY_BUILD_SLOTS} new builds for {month}
+            Founding clients · {month} {new Date().getFullYear()}
           </p>
 
           <h1 className="h1 mt-5 max-w-4xl">
@@ -96,14 +156,34 @@ export default function Home() {
             actual work.
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
-            <a href="#audit" className="btn btn-primary">
+          <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-4">
+            <a href={site.phoneHref} className="btn btn-primary">
+              Call {site.phone}
+            </a>
+            <a href="#audit" className="btn btn-secondary">
               Get a free audit
             </a>
-            <a href="#process" className="link link-block text-[15px]">
-              See how it works
-            </a>
           </div>
+
+          <p className="prose-measure mt-4 text-[15px] text-[var(--fg-2)]">
+            That number is answered by one of our systems, not by a person.
+            Ask it whatever a customer of yours would ask —{" "}
+            <a href="/demo" className="link">
+              here is what to try
+            </a>
+            .
+          </p>
+
+          {FOUNDING_SLOTS > 0 && (
+            <p className="prose-measure mt-8 border-t border-[var(--line)] pt-6 text-[15px] text-[var(--fg-2)]">
+              <span className="font-semibold text-[var(--fg)]">
+                Our first {FOUNDING_SLOTS} clients get the build free.
+              </span>{" "}
+              We are new, and we would rather earn the case study than charge
+              for it. No setup fee, {"\u0024"}1,000 a month once it is live, and you
+              can walk at any point in the first ninety days.
+            </p>
+          )}
         </div>
       </section>
 
