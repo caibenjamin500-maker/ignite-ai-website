@@ -23,6 +23,14 @@ export const site = {
    */
   url: "https://www.igniteaiagents.com",
   email: "caibenjamin500@gmail.com",
+  /**
+   * The number that answers. `phone` is what people read; `phoneHref` is what
+   * a tel: link dials. Keep both in step with the number on the Google
+   * Business Profile — search engines cross-check the two, and a mismatch
+   * costs local ranking.
+   */
+  phone: "(864) 702-2295",
+  phoneHref: "tel:+18647022295",
   location: "Greenville, South Carolina",
   /** Reviewed and published date for the legal pages. */
   legalUpdated: "August 21, 2026",
@@ -32,6 +40,14 @@ export const site = {
  * How many new builds are taken on each month. Shown in the hero.
  */
 export const MONTHLY_BUILD_SLOTS = 3;
+
+/**
+ * Founding-client offer. This is scarcity that is actually true and
+ * checkable — a real cohort, a real reason for the discount — which is why
+ * it persuades where a bare "3 slots left" does not. Set to 0 once the
+ * cohort is full and the banner removes itself.
+ */
+export const FOUNDING_SLOTS = 3;
 
 /**
  * The current month, in the business's own timezone rather than the server's.
