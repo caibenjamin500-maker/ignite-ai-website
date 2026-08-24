@@ -23,6 +23,11 @@ export default function SiteFooter() {
               {site.location}
             </p>
             <p className="mt-1 text-[14px]">
+              <a href={site.phoneHref} className="link link-block">
+                {site.phone}
+              </a>
+            </p>
+            <p className="text-[14px]">
               <a href={`mailto:${site.email}`} className="link link-block">
                 {site.email}
               </a>
@@ -38,6 +43,11 @@ export default function SiteFooter() {
                 Site
               </h2>
               <ul className="mt-3 space-y-2.5 text-[14px]">
+                <li>
+                  <a href="/demo" className="link link-block">
+                    Free demo
+                  </a>
+                </li>
                 <li>
                   <a href="/#problem" className="link link-block">
                     The problem

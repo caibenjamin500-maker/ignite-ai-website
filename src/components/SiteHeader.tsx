@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { site } from "@/lib/site";
 
 const NAV_LINKS = [
+  { href: "/demo", label: "Free demo" },
   { href: "/#problem", label: "The problem" },
   { href: "/#systems", label: "What we build" },
   { href: "/#process", label: "How it works" },
@@ -83,8 +85,20 @@ export default function SiteHeader() {
           </ul>
         </nav>
 
-        <a href="/#audit" className="btn btn-primary hidden md:inline-flex">
-          Get a free audit
+        <div className="hidden items-center gap-5 md:flex">
+          <a href={site.phoneHref} className="text-[15px] text-[var(--fg-2)] transition-colors hover:text-[var(--fg)]">
+            {site.phone}
+          </a>
+          <a href="/#audit" className="btn btn-primary">
+            Get a free audit
+          </a>
+        </div>
+
+        <a
+          href={site.phoneHref}
+          className="ml-auto mr-1 inline-flex h-11 items-center px-2 text-[15px] font-medium text-[var(--fg)] md:hidden"
+        >
+          Call
         </a>
 
         <button
@@ -141,6 +155,13 @@ export default function SiteHeader() {
               className="btn btn-primary mt-4 w-full"
             >
               Get a free audit
+            </a>
+            <a
+              href={site.phoneHref}
+              onClick={() => setOpen(false)}
+              className="btn btn-secondary mt-3 w-full"
+            >
+              Call {site.phone}
             </a>
           </nav>
         </div>
