@@ -12,7 +12,16 @@ export const site = {
    */
   legalStructure: "a sole proprietorship of Cai Benjamin",
   owner: "Cai Benjamin",
-  url: "https://igniteaiagents.com",
+  /**
+   * The host this site is actually served from.
+   *
+   * Vercel redirects the bare apex to www, so www is the real home. Every
+   * canonical tag, og:url, sitemap entry and robots.txt line is generated from
+   * this value — if it names the apex, we tell Google to index a URL that
+   * immediately redirects, which is a contradictory signal. Keep this matching
+   * whatever Vercel actually serves.
+   */
+  url: "https://www.igniteaiagents.com",
   email: "caibenjamin500@gmail.com",
   location: "Greenville, South Carolina",
   /** Reviewed and published date for the legal pages. */
