@@ -27,8 +27,8 @@ const TRY_THESE = [
     why: "The question every real caller opens with. Watch it handle a price question without either dodging or inventing a number.",
   },
   {
-    prompt: "“Can someone come out Thursday morning?”",
-    why: "This is the one that matters. It should take you through to an actual booking rather than promising a callback.",
+    prompt: "“Can you get me on a call Thursday morning?”",
+    why: "This is the one that matters. Rio should book that call with you while you are still on the phone, rather than promising that somebody will get back to you.",
   },
   {
     prompt: "“Am I talking to a real person?”",
@@ -53,9 +53,9 @@ export default function Demo() {
           </h1>
 
           <p className="lede prose-measure mt-6">
-            This is not a recording and not a video. It is one of the systems we
-            build, running live, waiting for a call. There is no form to fill in
-            and nobody will ring you back unless you ask them to.
+            This is not a recording and not a video. It is Rio — the system that
+            answers our own phone — running live, waiting for a call. There is
+            no form to fill in and nobody will ring you back unless you ask.
           </p>
 
           <div className="mt-10">
@@ -78,12 +78,11 @@ export default function Demo() {
         <div className="mx-auto max-w-6xl">
           <p className="eyebrow">Try these</p>
           <h2 id="try-heading" className="h2 mt-4 max-w-2xl">
-            Give it your worst.
+            Talk to it the way your customers do.
           </h2>
           <p className="prose-measure mt-5 text-[var(--fg-2)]">
             Most people are too polite to a machine and come away unconvinced.
-            Be the difficult caller instead — that is the only test worth
-            running.
+            Be the real caller instead — that is the only test worth running.
           </p>
 
           <dl className="mt-12 grid gap-x-10 gap-y-9 md:grid-cols-2">
@@ -147,12 +146,13 @@ export default function Demo() {
             </div>
 
             <div>
-              <dt className="h3">It won&apos;t know your business yet.</dt>
+              <dt className="h3">Rio answers for us, not for you.</dt>
               <dd className="mt-2 text-[15px] leading-relaxed text-[var(--fg-2)]">
-                This one is set up for a generic service business. A real build
-                is trained on your services, your pricing, your area, and the
-                way you talk to your own customers. Judge the handling, not the
-                specifics.
+                Rio is our receptionist, so it books calls — nobody is coming
+                out to a job. Yours would be trained on your services, your
+                pricing, your area, and the way you talk to your own customers,
+                and it would book whatever you actually sell. Judge the
+                handling, not the specifics.
               </dd>
             </div>
           </dl>
@@ -176,8 +176,10 @@ export default function Demo() {
                 Our first {FOUNDING_SLOTS} clients get the build free.
               </span>{" "}
               We are new, and we would rather earn the case study than charge
-              for it. No setup fee, $1,000 a month once it is live, and you can
-              walk away at any point in the first ninety days.
+              for it. What it costs to run after that depends on what we build
+              you — every system is priced to the business it is built for, so
+              you get your number in writing after the audit, before any work
+              starts.
             </p>
           )}
 
