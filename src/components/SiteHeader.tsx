@@ -86,7 +86,12 @@ export default function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-5 md:flex">
-          <a href={site.phoneHref} className="text-[15px] text-[var(--fg-2)] transition-colors hover:text-[var(--fg)]">
+          <a
+            href={site.phoneHref}
+            /* py-2 matches the nav links, so the tap target clears 24px
+               rather than being just the height of the text */
+            className="inline-block py-2 text-[15px] text-[var(--fg-2)] transition-colors hover:text-[var(--fg)]"
+          >
             {site.phone}
           </a>
           <a href="/#audit" className="btn btn-primary">
