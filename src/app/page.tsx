@@ -110,7 +110,7 @@ const STEPS = [
     n: "01",
     name: "The audit",
     meta: "20 minutes · free",
-    body: "We go through how inquiries reach you today and where they stop — calls, forms, chats, after-hours. You leave with a written picture of where things are slipping, whether or not you build anything with us.",
+    body: "We go through how inquiries reach you today and where they stop — calls, forms, chats, after-hours. You leave with a written picture of where things are slipping, and what a build would cost you. There is no price list, because no two builds are the same shape.",
   },
   {
     n: "02",
@@ -180,8 +180,10 @@ export default function Home() {
                 Our first {FOUNDING_SLOTS} clients get the build free.
               </span>{" "}
               We are new, and we would rather earn the case study than charge
-              for it. No setup fee, {"\u0024"}1,000 a month once it is live, and you
-              can walk at any point in the first ninety days.
+              for it. What it costs to run after that depends on what we build
+              you — every system is priced to the business it is built for, so
+              you get your number in writing after the audit, before any work
+              starts.
             </p>
           )}
         </div>
