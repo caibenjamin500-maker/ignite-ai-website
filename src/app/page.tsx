@@ -253,6 +253,50 @@ export default function Home() {
         </div>
       </section>
 
+      
+      {/* ── Industries we serve ─────────────── */}
+      <section
+        id="industries"
+        aria-labelledby="industries-heading"
+        className="border-b border-[var(--line)] px-5 py-[var(--section-y)] md:px-8"
+      >
+        <div className="mx-auto max-w-6xl">
+          <p className="eyebrow">Industries we serve</p>
+
+          <h2
+            id="industries-heading"
+            className="h2 mt-4 max-w-2xl"
+          >
+            Built for businesses that can&apos;t afford missed calls.
+          </h2>
+
+          <p className="prose-measure mt-5 text-[var(--fg-2)]">
+            Different industries have different workflows.
+            We build AI front offices around how your
+            business actually operates.
+          </p>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            <a
+              href="/ai-receptionist-hvac"
+              className="card group block transition-colors hover:border-[var(--accent)]"
+            >
+              <p className="eyebrow">Home services</p>
+
+              <h3 className="h3 mt-3 group-hover:text-[var(--accent-text)]">
+                HVAC Companies →
+              </h3>
+
+              <p className="mt-3 text-[15px] leading-relaxed text-[var(--fg-2)]">
+                AI receptionists for heating and cooling
+                businesses. Answer calls, handle after-hours
+                inquiries, and help schedule appointments.
+              </p>
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── How it works ──────────────────────── */}
       <section
         id="process"
