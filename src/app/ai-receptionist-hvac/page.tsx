@@ -5,215 +5,203 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "AI Receptionist for HVAC Companies | Ignite AI",
   description:
-    "Discover how an AI receptionist can help HVAC companies answer calls, handle after-hours inquiries, and book appointments. Explore Ignite AI.",
+    "Explore how an AI receptionist helps HVAC companies answer calls, handle after-hours inquiries, and schedule appointments.",
   alternates: {
     canonical:
       "https://www.igniteaiagents.com/ai-receptionist-hvac",
   },
 };
 
-const questions = [
+const benefits = [
+  {
+    title: "After-hours coverage",
+    description:
+      "Help customers reach your business during evenings, weekends, and busy periods.",
+  },
+  {
+    title: "Appointment scheduling",
+    description:
+      "Connect with compatible calendars to check availability and schedule appointments.",
+  },
+  {
+    title: "Human call transfers",
+    description:
+      "Route callers to your existing staff when a conversation needs a human.",
+  },
+];
+
+const faqs = [
   {
     question: "What is an AI receptionist for HVAC companies?",
     answer:
-      "An AI receptionist is a voice assistant that answers incoming calls, speaks with customers, collects information, and can help schedule appointments. HVAC businesses can use one to assist their office staff during busy periods or after hours.",
+      "An AI receptionist is a voice assistant that answers incoming calls, communicates with customers, collects information, and can assist with appointment scheduling.",
   },
   {
-    question: "Can an AI receptionist answer calls after hours?",
+    question: "Can an AI receptionist answer HVAC calls at night?",
     answer:
-      "Yes. An AI receptionist can be configured to answer calls outside normal business hours, including evenings and weekends.",
+      "Yes. AI receptionists can be configured to answer calls outside normal business hours.",
   },
   {
-    question: "Can an AI receptionist book HVAC appointments?",
+    question: "Can it book appointments?",
     answer:
-      "Yes. When connected to a compatible scheduling system, an AI receptionist can check availability and help book appointments.",
+      "Yes. With a compatible calendar integration, an AI receptionist can check availability and schedule appointments.",
   },
   {
-    question: "Can callers speak to a real person?",
+    question: "Can customers speak to a human?",
     answer:
-      "Yes. A properly configured AI receptionist can transfer calls to a human team member when needed, depending on the business's call routing setup.",
+      "Yes. Call transfers can be configured so callers can reach existing office staff when needed.",
   },
   {
-    question: "Does AI replace an HVAC company's office staff?",
+    question: "Does it replace office staff?",
     answer:
-      "Not necessarily. Many businesses can use AI alongside their existing team to help manage overflow calls, routine inquiries, and after-hours requests.",
+      "Not necessarily. AI receptionists can work alongside existing teams to help manage overflow calls and routine inquiries.",
   },
 ];
 
 export default function HVACPage() {
   return (
-    <main
-      style={{
-        background: "#090911",
-        color: "#f5f5fa",
-        minHeight: "100vh",
-        padding: "72px 24px",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <article
-        style={{
-          maxWidth: 850,
-          margin: "0 auto",
-          lineHeight: 1.8,
-        }}
-      >
-        <Link
-          href="/"
-          style={{ color: "#80e8f2" }}
-        >
-          ← Ignite AI
+    <main id="main-content" className="min-h-screen">
+      <div className="mx-auto max-w-5xl px-6 py-12 md:py-20">
+        <Link href="/" className="link link-block">
+          ← Back to Ignite AI
         </Link>
 
-        <header style={{ margin: "70px 0" }}>
-          <p style={{ color: "#d77aff" }}>
-            IGNITE AI | HVAC AUTOMATION
+        <header className="max-w-3xl py-16 md:py-24">
+          <p className="eyebrow mb-5">
+            IGNITE AI / HVAC SOLUTIONS
           </p>
 
-          <h1
-            style={{
-              fontSize: "clamp(36px, 6vw, 58px)",
-              lineHeight: 1.12,
-            }}
-          >
+          <h1 className="h1 mb-6">
             AI Receptionist for HVAC Companies
           </h1>
 
-          <p style={{ fontSize: 20, color: "#c4c2d0" }}>
-            Your technicians handle the heating and cooling.
+          <p className="lede prose-measure mb-8">
+            Your technicians handle heating and cooling.
             Let AI help handle the phones.
           </p>
 
-          <Link
-            href="/demo"
-            style={{
-              display: "inline-block",
-              background: "#b436d9",
-              color: "#fff",
-              padding: "14px 26px",
-              borderRadius: 9,
-              textDecoration: "none",
-              fontWeight: "bold",
-              marginTop: 18,
-            }}
-          >
-            Explore Our AI Receptionist
+          <Link href="/demo" className="btn btn-primary">
+            Meet RIO
           </Link>
         </header>
 
-        <section>
-          <h2>Why HVAC Companies Miss Calls</h2>
-          <p>
-            HVAC businesses often receive calls while
-            technicians are working, office staff are
-            assisting other customers, or the business
-            is closed.
-          </p>
-          <p>
-            Those calls might involve appointment
-            requests, service questions, or urgent
-            heating and cooling problems.
-          </p>
-          <p>
-            A missed call means that lead went to another HVAC business.
-          </p>
-        </section>
-
-        <section style={{ marginTop: 55 }}>
-          <h2>How an AI Receptionist Helps</h2>
-          <p>
-            An AI receptionist can provide an additional
-            layer of phone coverage without requiring
-            someone to sit beside the phone all day.
-          </p>
-
-          <ul>
-            <li>Answer incoming customer calls</li>
-            <li>Respond to common service questions</li>
-            <li>Collect customer contact information</li>
-            <li>Help schedule available appointments</li>
-            <li>Assist with nights and weekend coverage</li>
-            <li>Transfer calls to human staff when needed</li>
-          </ul>
-
-          <p>
-            The exact capabilities depend on the
-            business's configuration, integrations,
-            and operating procedures.
+        <section
+          className="border-t py-16"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <p className="eyebrow mb-4">THE PROBLEM</p>
+          <h2 className="h2 mb-5">
+            Every unanswered call is a missed opportunity.
+          </h2>
+          <p className="lede prose-measure">
+            HVAC companies receive calls while technicians
+            are in the field, office staff are busy, or
+            the business is closed. Some of those callers
+            need service immediately. Others want to
+            schedule an appointment.
           </p>
         </section>
 
-        <section style={{ marginTop: 55 }}>
-          <h2>Meet RIO by Ignite AI</h2>
-          <p>
-            RIO is an AI voice receptionist developed
-            by Ignite AI, a company based in Greenville,
-            South Carolina.
-          </p>
-          <p>
-            RIO is designed to answer business calls,
-            communicate naturally with customers,
-            assist with appointment scheduling, and
-            transfer callers when appropriate.
-          </p>
-          <p>
-            Ignite AI works with service businesses
-            to configure AI-powered front-office
-            experiences around their needs.
+        <section className="py-16">
+          <p className="eyebrow mb-4">THE SOLUTION</p>
+          <h2 className="h2 mb-5">
+            A front office that can answer around the clock.
+          </h2>
+          <p className="lede prose-measure mb-8">
+            An AI receptionist can provide additional phone
+            coverage, helping customers reach your business
+            without relying entirely on staff availability.
           </p>
 
-          <Link
-            href="/demo"
-            style={{ color: "#80e8f2", fontWeight: "bold" }}
-          >
-            Learn more about RIO →
+          <div className="grid gap-4 md:grid-cols-3">
+            {benefits.map((benefit) => (
+              <div className="card" key={benefit.title}>
+                <h3 className="h3 mb-3">
+                  {benefit.title}
+                </h3>
+                <p style={{ color: "var(--fg-2)" }}>
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          className="border-t py-16"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <p className="eyebrow mb-4">
+            BUILT BY IGNITE AI
+          </p>
+          <h2 className="h2 mb-5">Meet RIO.</h2>
+
+          <p className="lede prose-measure mb-5">
+            RIO is an AI voice receptionist developed by
+            Ignite AI in Greenville, South Carolina.
+          </p>
+
+          <p className="prose-measure mb-6"
+             style={{ color: "var(--fg-2)" }}>
+            RIO can answer business calls, communicate
+            with customers, assist with appointment
+            scheduling, and transfer callers to human
+            staff when configured to do so.
+          </p>
+
+          <Link href="/demo" className="link link-block">
+            Explore RIO →
           </Link>
         </section>
 
-        <section style={{ marginTop: 55 }}>
-          <h2>Frequently Asked Questions</h2>
+        <section
+          className="border-t py-16"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <p className="eyebrow mb-4">
+            FREQUENTLY ASKED QUESTIONS
+          </p>
+          <h2 className="h2 mb-8">
+            HVAC AI Receptionist FAQs
+          </h2>
 
-          {questions.map((item) => (
-            <div
-              key={item.question}
-              style={{
-                borderBottom: "1px solid #363044",
-                padding: "17px 0",
-              }}
-            >
-              <h3>{item.question}</h3>
-              <p style={{ color: "#c4c2d0" }}>
-                {item.answer}
-              </p>
-            </div>
-          ))}
+          <div className="max-w-3xl">
+            {faqs.map((faq) => (
+              <div
+                key={faq.question}
+                className="border-b py-6"
+                style={{ borderColor: "var(--line)" }}
+              >
+                <h3 className="h3 mb-3">
+                  {faq.question}
+                </h3>
+                <p style={{ color: "var(--fg-2)" }}>
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
         </section>
 
-        <section style={{ marginTop: 65 }}>
-          <h2>See What an AI Front Office Could Do</h2>
-          <p>
+        <section
+          className="border-t py-16"
+          style={{ borderColor: "var(--line)" }}
+        >
+          <p className="eyebrow mb-4">NEXT STEP</p>
+          <h2 className="h2 mb-5">
+            See what an AI front office could do.
+          </h2>
+          <p className="lede prose-measure mb-8">
             Every HVAC company operates differently.
-            Ignite AI helps businesses explore
-            practical ways to handle incoming calls
-            more efficiently.
+            Explore how Ignite AI can help with your
+            business's incoming calls.
           </p>
 
-          <Link
-            href="/demo"
-            style={{
-              display: "inline-block",
-              background: "#b436d9",
-              padding: "14px 26px",
-              color: "white",
-              borderRadius: 9,
-              textDecoration: "none",
-              fontWeight: "bold",
-            }}
-          >
+          <Link href="/demo" className="btn btn-primary">
             Explore Ignite AI
           </Link>
         </section>
-      </article>
+      </div>
     </main>
   );
 }
